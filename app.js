@@ -156,7 +156,7 @@ const renderTeacher = (entry) => {
   const name = document.createElement('strong');
   name.textContent = entry.name;
   top.append(name);
-  if (hasToken(entry.delete_token) && !String(entry.delete_token).startsWith('pending-')) {
+  if (entry.delete_token && !String(entry.delete_token).startsWith('pending-')) {
     top.append(renderDeleteButton(entry.delete_token));
   }
   item.append(top);
@@ -179,7 +179,7 @@ const renderComment = (entry) => {
   const name = document.createElement('strong');
   name.textContent = entry.name;
   top.append(name);
-  if (hasToken(entry.delete_token) && !String(entry.delete_token).startsWith('pending-')) {
+  if (entry.delete_token && !String(entry.delete_token).startsWith('pending-')) {
     top.append(renderDeleteButton(entry.delete_token));
   }
 
@@ -193,12 +193,12 @@ const renderDeleteButton = (token) => {
   const button = document.createElement('button');
   button.className = 'delete-button';
   button.type = 'button';
-  button.title = 'Eigenen Eintrag löschen';
+  button.title = 'Eintrag löschen';
   button.textContent = '×';
   button.addEventListener('click', async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    if (!confirm('Diesen eigenen Eintrag wirklich löschen?')) return;
+    if (!confirm('Diesen Eintrag wirklich löschen?')) return;
     const card = event.currentTarget.closest('[data-event-id]');
     const removed = removeEntry(token);
     setCardSaving(card, true);
