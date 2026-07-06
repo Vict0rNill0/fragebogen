@@ -1,5 +1,3 @@
 window.GRUNDSCHULSPORTFESTE_CONFIG = {
-  // Paste the deployed Google Apps Script web app URL here.
-  // Empty endpoint = local demo mode in this browser only.
-  endpoint: '',
+  endpoint: 'https://script.google.com/macros/s/AKfycbyy9r30YYh1kzXKEV03fw2jDu4zVsMd04hPKPxtBpzY7oHsb1J4w_MakqcqAgBwsHQ5OA/exec',
 };
