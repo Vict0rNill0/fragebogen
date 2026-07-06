@@ -1,3 +1,3 @@
 window.GRUNDSCHULSPORTFESTE_CONFIG = {
-  endpoint: 'https://script.google.com/macros/s/AKfycbyy9r30YYh1kzXKEV03fw2jDu4zVsMd04hPKPxtBpzY7oHsb1J4w_MakqcqAgBwsHQ5OA/exec',
+  endpoint: 'https://script.google.com/macros/s/AKfycbwKTAN4wYStW4kjC9K4CAMP_mfFBYwHJBRxPVnHmIDgf3eT3ObkQG7XcA10-LdX7LjYAA/exec',
 };
