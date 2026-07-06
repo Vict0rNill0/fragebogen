@@ -32,10 +32,17 @@ const showToast = (message) => {
 const setStatus = (title, text, variant = '') => {
   const card = document.querySelector('[data-status-card]');
   if (!card) return;
+  card.classList.remove('is-hidden');
   card.classList.toggle('is-demo', variant === 'demo');
   card.classList.toggle('is-error', variant === 'error');
   card.querySelector('[data-status-title]').textContent = title;
   card.querySelector('[data-status-text]').textContent = text;
+};
+
+const clearStatus = () => {
+  const card = document.querySelector('[data-status-card]');
+  if (!card) return;
+  card.classList.add('is-hidden');
 };
 
 const makeToken = () => {
@@ -89,7 +96,7 @@ const request = async (payload) => {
 
 const loadData = async () => {
   if (!endpoint) {
-    setStatus('Demo-Modus', 'Noch keine Google-Sheets-URL eingetragen. Einträge bleiben nur in diesem Browser sichtbar.', 'demo');
+    setStatus('Google Sheets ist noch nicht verbunden', 'Einträge bleiben gerade nur in diesem Browser sichtbar. Bitte die Apps-Script-URL konfigurieren.', 'error');
     state = readDemo();
     render();
     return;
@@ -100,10 +107,10 @@ const loadData = async () => {
     const result = await response.json();
     if (!result.ok) throw new Error(result.error || 'Daten konnten nicht geladen werden.');
     state = { signups: result.signups || [], comments: result.comments || [] };
-    setStatus('Live verbunden', 'Einträge werden aus Google Sheets geladen und nach dem Speichern aktualisiert.');
+    clearStatus();
     render();
   } catch (error) {
-    setStatus('Verbindung fehlgeschlagen', error.message, 'error');
+    setStatus('Google Sheets ist noch nicht verbunden', 'Einträge können erst auf allen Geräten geteilt werden, wenn die Apps-Script-Berechtigung freigegeben ist.', 'error');
   }
 };
 
