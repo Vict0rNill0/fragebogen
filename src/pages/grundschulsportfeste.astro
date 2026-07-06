@@ -1,0 +1,47 @@
+---
+import EventCard from '../components/EventCard.astro';
+import Layout from '../layouts/Layout.astro';
+import { events } from '../data/events';
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout
+  title="Grundschulsportfeste 2026/2027 Alt-Herne"
+  description="Terminübersicht und Begleitpersonen für die Grundschulsportfeste 2026/2027 in Alt-Herne."
+>
+  <main class="page-shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Alt-Herne · Schuljahr 2026/2027</p>
+        <h1>Grundschulsportfeste</h1>
+        <p>
+          Übersicht für die Sporttermine. Lehrkräfte können sich pro Veranstaltung als Begleitperson eintragen
+          und kurze Hinweise oder Fragen öffentlich ergänzen.
+        </p>
+      </div>
+      <aside class="deadline-card">
+        <span>Rückmeldung bis</span>
+        <strong>29.09.2026</strong>
+        <small>Stadt Herne · FB 45 Sport · Vivien Litsch</small>
+      </aside>
+    </section>
+
+    <section class="overview-intro">
+      <div>
+        <p class="eyebrow">Alle Termine</p>
+        <h2>Erst Überblick, dann öffnen</h2>
+      </div>
+      <p>
+        Du siehst schon in der Übersicht, ob Lehrkräfte Interesse haben. Tippe auf eine Veranstaltung, um Details,
+        mögliche Begleitungen und Kommentare zu öffnen.
+      </p>
+    </section>
+
+    <section class="event-list" aria-label="Sporttermine">
+      {events.map((event) => <EventCard event={event} />)}
+    </section>
+  </main>
+
+  <script is:inline type="application/json" id="event-data" set:html={JSON.stringify(events)}></script>
+  <script is:inline src={`${base}app.js`} type="module"></script>
+</Layout>

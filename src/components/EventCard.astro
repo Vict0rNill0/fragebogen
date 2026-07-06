@@ -1,0 +1,81 @@
+---
+import type { EventItem } from '../data/events';
+import { formattedDate } from '../data/events';
+
+type Props = {
+  event: EventItem;
+};
+
+const { event } = Astro.props;
+---
+
+<details class={`event-card theme-${event.theme}`} data-event-id={event.id}>
+  <summary class="event-summary">
+    <span class="sport-icon" aria-hidden="true">{event.icon}</span>
+    <span class="summary-main">
+      <span class="event-title">{event.sport}</span>
+      <span class="event-meta">{formattedDate(event.date)} · {event.location}</span>
+      <span class="summary-names" data-summary-names>Aktuelle Einträge werden geladen...</span>
+    </span>
+    <span class="summary-count" data-summary-count>0</span>
+  </summary>
+
+  <div class="event-body">
+    <div class="facts-grid">
+      <div>
+        <span class="fact-label">Für wen?</span>
+        <strong>{event.audience}</strong>
+      </div>
+      <div>
+        <span class="fact-label">Wann?</span>
+        <strong>{formattedDate(event.date)}</strong>
+      </div>
+      <div>
+        <span class="fact-label">Wo?</span>
+        <strong>{event.location}</strong>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Folgende Lehrkräfte könnten sich eine Begleitung vorstellen</h3>
+        <span data-teacher-count>0 eingetragen</span>
+      </div>
+      <div class="teacher-list" data-teacher-list>
+        <p class="empty-state">Noch niemand eingetragen.</p>
+      </div>
+      <form class="signup-form" data-signup-form>
+        <label>
+          <span>Dein Name</span>
+          <input name="name" type="text" autocomplete="name" required maxlength="80" placeholder="z. B. Frau Müller" />
+        </label>
+        <label>
+          <span>Optionaler Kommentar</span>
+          <textarea name="text" maxlength="600" rows="2" placeholder="z. B. Ich könnte mitkommen, wenn der Termin passt."></textarea>
+        </label>
+        <button type="submit">Ich könnte begleiten</button>
+      </form>
+    </section>
+
+    <section class="panel comments-panel">
+      <div class="panel-head">
+        <h3>Absprachen & Hinweise</h3>
+        <span data-comment-count>0 Kommentare</span>
+      </div>
+      <div class="comment-list" data-comment-list>
+        <p class="empty-state">Noch keine Hinweise.</p>
+      </div>
+      <form class="comment-form" data-comment-form>
+        <label>
+          <span>Name</span>
+          <input name="name" type="text" autocomplete="name" required maxlength="80" placeholder="z. B. Herr Becker" />
+        </label>
+        <label>
+          <span>Hinweis oder Frage</span>
+          <textarea name="text" required maxlength="600" rows="3" placeholder="z. B. Ich kann den Bus begleiten, falls noch jemand gebraucht wird."></textarea>
+        </label>
+        <button type="submit">Kommentar senden</button>
+      </form>
+    </section>
+  </div>
+</details>

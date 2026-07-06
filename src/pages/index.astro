@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout title="Fragebogen">
+  <main class="landing">
+    <section class="hero compact">
+      <p class="eyebrow">Fragebogen</p>
+      <h1>Übersicht</h1>
+      <p>Hier entstehen die öffentlichen Fragebogen und Terminabsprachen.</p>
+      <a class="primary-link" href={`${base}grundschulsportfeste/`}>Grundschulsportfeste 2026/2027 Alt-Herne öffnen</a>
+    </section>
+  </main>
+</Layout>
