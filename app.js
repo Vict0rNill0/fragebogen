@@ -19,6 +19,39 @@ const hasToken = (token) => token && readTokens().includes(token);
 const addToken = (token) => writeTokens([...readTokens(), token]);
 const removeToken = (token) => writeTokens(readTokens().filter((item) => item !== token));
 
+const setCardSaving = (card, saving) => {
+  card?.classList.toggle('is-saving', saving);
+};
+
+const addEntry = (collection, entry) => {
+  state[collection] = [...state[collection], entry];
+  render();
+};
+
+const replaceEntryToken = (collection, oldToken, newToken) => {
+  state[collection] = state[collection].map((entry) =>
+    entry.delete_token === oldToken ? { ...entry, delete_token: newToken } : entry,
+  );
+  render();
+};
+
+const removeEntry = (token) => {
+  const removed = {
+    signups: state.signups.filter((entry) => entry.delete_token === token),
+    comments: state.comments.filter((entry) => entry.delete_token === token),
+  };
+  state.signups = state.signups.filter((entry) => entry.delete_token !== token);
+  state.comments = state.comments.filter((entry) => entry.delete_token !== token);
+  render();
+  return removed;
+};
+
+const restoreEntries = (removed) => {
+  state.signups = [...state.signups, ...removed.signups];
+  state.comments = [...state.comments, ...removed.comments];
+  render();
+};
+
 const showToast = (message) => {
   const oldToast = document.querySelector('.toast');
   oldToast?.remove();
@@ -123,7 +156,9 @@ const renderTeacher = (entry) => {
   const name = document.createElement('strong');
   name.textContent = entry.name;
   top.append(name);
-  if (hasToken(entry.delete_token)) top.append(renderDeleteButton(entry.delete_token));
+  if (hasToken(entry.delete_token) && !String(entry.delete_token).startsWith('pending-')) {
+    top.append(renderDeleteButton(entry.delete_token));
+  }
   item.append(top);
 
   if (entry.text) {
@@ -144,7 +179,9 @@ const renderComment = (entry) => {
   const name = document.createElement('strong');
   name.textContent = entry.name;
   top.append(name);
-  if (hasToken(entry.delete_token)) top.append(renderDeleteButton(entry.delete_token));
+  if (hasToken(entry.delete_token) && !String(entry.delete_token).startsWith('pending-')) {
+    top.append(renderDeleteButton(entry.delete_token));
+  }
 
   const text = document.createElement('p');
   text.textContent = entry.text;
@@ -162,13 +199,19 @@ const renderDeleteButton = (token) => {
     event.preventDefault();
     event.stopPropagation();
     if (!confirm('Diesen eigenen Eintrag wirklich löschen?')) return;
+    const card = event.currentTarget.closest('[data-event-id]');
+    const removed = removeEntry(token);
+    setCardSaving(card, true);
     try {
       await request({ action: 'delete', delete_token: token });
       removeToken(token);
-      await loadData();
+      loadData();
       showToast('Eintrag gelöscht.');
     } catch (error) {
+      restoreEntries(removed);
       showToast(error.message);
+    } finally {
+      setCardSaving(card, false);
     }
   });
   return button;
@@ -205,15 +248,17 @@ const empty = (text) => {
 
 const submitWithBusy = async (form, callback) => {
   const button = form.querySelector('button[type="submit"]');
+  const card = form.closest('[data-event-id]');
   button.disabled = true;
+  setCardSaving(card, true);
   try {
     await callback(new FormData(form));
     form.reset();
-    await loadData();
   } catch (error) {
     showToast(error.message);
   } finally {
     button.disabled = false;
+    setCardSaving(card, false);
   }
 };
 
@@ -222,30 +267,73 @@ for (const card of document.querySelectorAll('[data-event-id]')) {
   card.querySelector('[data-signup-form]').addEventListener('submit', (event) => {
     event.preventDefault();
     submitWithBusy(event.currentTarget, async (formData) => {
-      const result = await request({
-        type: 'anmeldung',
+      const tempToken = `pending-${makeToken()}`;
+      const entry = {
         event_slug: eventSlug,
         name: String(formData.get('name')).trim(),
         text: String(formData.get('text')).trim(),
-      });
+        delete_token: tempToken,
+        timestamp: new Date().toISOString(),
+      };
+      addToken(tempToken);
+      addEntry('signups', entry);
+
+      let result;
+      try {
+        result = await request({
+          type: 'anmeldung',
+          event_slug: eventSlug,
+          name: entry.name,
+          text: entry.text,
+        });
+      } catch (error) {
+        removeToken(tempToken);
+        removeEntry(tempToken);
+        throw error;
+      }
+      removeToken(tempToken);
       addToken(result.delete_token);
+      replaceEntryToken('signups', tempToken, result.delete_token);
       showToast('Dein Interesse ist eingetragen.');
+      loadData();
     });
   });
 
   card.querySelector('[data-comment-form]').addEventListener('submit', (event) => {
     event.preventDefault();
     submitWithBusy(event.currentTarget, async (formData) => {
-      const result = await request({
-        type: 'kommentar',
+      const tempToken = `pending-${makeToken()}`;
+      const entry = {
         event_slug: eventSlug,
         name: String(formData.get('name')).trim(),
         text: String(formData.get('text')).trim(),
-      });
+        delete_token: tempToken,
+        timestamp: new Date().toISOString(),
+      };
+      addToken(tempToken);
+      addEntry('comments', entry);
+
+      let result;
+      try {
+        result = await request({
+          type: 'kommentar',
+          event_slug: eventSlug,
+          name: entry.name,
+          text: entry.text,
+        });
+      } catch (error) {
+        removeToken(tempToken);
+        removeEntry(tempToken);
+        throw error;
+      }
+      removeToken(tempToken);
       addToken(result.delete_token);
+      replaceEntryToken('comments', tempToken, result.delete_token);
       showToast('Kommentar gespeichert.');
+      loadData();
     });
   });
 }
 
 loadData();
+window.setInterval(loadData, 10000);
