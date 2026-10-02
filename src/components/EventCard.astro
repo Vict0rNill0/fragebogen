@@ -4,9 +4,10 @@ import { formattedDate } from '../data/events';
 
 type Props = {
   event: EventItem;
+  closed?: boolean;
 };
 
-const { event } = Astro.props;
+const { event, closed = false } = Astro.props;
 ---
 
 <details class={`event-card theme-${event.theme}`} data-event-id={event.id}>
@@ -44,17 +45,21 @@ const { event } = Astro.props;
       <div class="teacher-list" data-teacher-list>
         <p class="empty-state">Noch niemand eingetragen.</p>
       </div>
-      <form class="signup-form" data-signup-form>
-        <label>
-          <span>Dein Name</span>
-          <input name="name" type="text" autocomplete="name" required maxlength="80" placeholder="z. B. Frau Müller" />
-        </label>
-        <label>
-          <span>Optionaler Kommentar</span>
-          <textarea name="text" maxlength="600" rows="2" placeholder="z. B. Ich könnte mitkommen, wenn der Termin passt."></textarea>
-        </label>
-        <button type="submit">Ich könnte begleiten</button>
-      </form>
+      {closed ? (
+        <p class="closed-note">Dieser Fragebogen ist abgeschlossen. Die Einträge bleiben als Archiv sichtbar.</p>
+      ) : (
+        <form class="signup-form" data-signup-form>
+          <label>
+            <span>Dein Name</span>
+            <input name="name" type="text" autocomplete="name" required maxlength="80" placeholder="z. B. Frau Müller" />
+          </label>
+          <label>
+            <span>Optionaler Kommentar</span>
+            <textarea name="text" maxlength="600" rows="2" placeholder="z. B. Ich könnte mitkommen, wenn der Termin passt."></textarea>
+          </label>
+          <button type="submit">Ich könnte begleiten</button>
+        </form>
+      )}
     </section>
 
     <section class="panel comments-panel">
@@ -65,17 +70,19 @@ const { event } = Astro.props;
       <div class="comment-list" data-comment-list>
         <p class="empty-state">Noch keine Hinweise.</p>
       </div>
-      <form class="comment-form" data-comment-form>
-        <label>
-          <span>Name</span>
-          <input name="name" type="text" autocomplete="name" required maxlength="80" placeholder="z. B. Herr Becker" />
-        </label>
-        <label>
-          <span>Hinweis oder Frage</span>
-          <textarea name="text" required maxlength="600" rows="3" placeholder="z. B. Ich kann den Bus begleiten, falls noch jemand gebraucht wird."></textarea>
-        </label>
-        <button type="submit">Kommentar senden</button>
-      </form>
+      {closed ? null : (
+        <form class="comment-form" data-comment-form>
+          <label>
+            <span>Name</span>
+            <input name="name" type="text" autocomplete="name" required maxlength="80" placeholder="z. B. Herr Becker" />
+          </label>
+          <label>
+            <span>Hinweis oder Frage</span>
+            <textarea name="text" required maxlength="600" rows="3" placeholder="z. B. Ich kann den Bus begleiten, falls noch jemand gebraucht wird."></textarea>
+          </label>
+          <button type="submit">Kommentar senden</button>
+        </form>
+      )}
     </section>
   </div>
 </details>

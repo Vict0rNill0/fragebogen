@@ -264,7 +264,11 @@ const submitWithBusy = async (form, callback) => {
 
 for (const card of document.querySelectorAll('[data-event-id]')) {
   const eventSlug = card.dataset.eventId;
-  card.querySelector('[data-signup-form]').addEventListener('submit', (event) => {
+  const signupForm = card.querySelector('[data-signup-form]');
+  const commentForm = card.querySelector('[data-comment-form]');
+  if (!signupForm || !commentForm) continue;
+
+  signupForm.addEventListener('submit', (event) => {
     event.preventDefault();
     submitWithBusy(event.currentTarget, async (formData) => {
       const tempToken = `pending-${makeToken()}`;
@@ -299,7 +303,7 @@ for (const card of document.querySelectorAll('[data-event-id]')) {
     });
   });
 
-  card.querySelector('[data-comment-form]').addEventListener('submit', (event) => {
+  commentForm.addEventListener('submit', (event) => {
     event.preventDefault();
     submitWithBusy(event.currentTarget, async (formData) => {
       const tempToken = `pending-${makeToken()}`;

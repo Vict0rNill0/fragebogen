@@ -6,17 +6,16 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <Layout
-  title="Grundschulsportfeste 2026/2027 Alt-Herne"
+  title="Fragebogen 1 · Grundschulsportfeste 2026/2027 Alt-Herne"
   description="Terminübersicht und Begleitpersonen für die Grundschulsportfeste 2026/2027 in Alt-Herne."
 >
   <main class="page-shell">
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">Alt-Herne · Schuljahr 2026/2027</p>
+        <p class="eyebrow">Fragebogen 1 · Archiv · Alt-Herne</p>
         <h1>Grundschulsportfeste</h1>
         <p>
-          Übersicht für die Sporttermine. Lehrkräfte können sich pro Veranstaltung als Begleitperson eintragen
-          und kurze Hinweise oder Fragen öffentlich ergänzen.
+          Dieser Fragebogen ist abgeschlossen. Die Terminübersicht und die bisherigen Einträge bleiben als Archiv sichtbar.
         </p>
       </div>
       <aside class="deadline-card">
@@ -43,7 +42,7 @@ const base = import.meta.env.BASE_URL;
     </section>
 
     <section class="event-list" aria-label="Sporttermine">
-      {events.map((event) => <EventCard event={event} />)}
+      {events.map((event) => <EventCard event={event} closed />)}
     </section>
   </main>
 
