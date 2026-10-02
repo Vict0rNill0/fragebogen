@@ -13,10 +13,10 @@ Dieses Repository enthält mehrere nummerierte Fragebogen für die Schule.
 ## Öffentliche URLs
 
 - Fragebogen 1: `/fragebogen/grundschulsportfeste/` (abgeschlossenes Archiv)
-- Fragebogen 2: `/fragebogen/collegiumstreffen/` (aktuell)
+- Fragebogen 2: `/fragebogen/Kollegiumstreffen/` (aktuell)
 
 Die kurze, direkt teilbare Root-Domain-URL für Fragebogen 2 lautet:
 
-`https://victornillo.com/collegiumstreffen/`
+`https://victornillo.com/Kollegiumstreffen/`
 
 Neue Fragebogen bekommen eine neue Nummer, eine eigene Seite unter `src/pages/` und einen eigenen Abschnitt in `questionnaires/`.
